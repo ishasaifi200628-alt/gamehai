@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="google-adsense-account" content="ca-pub-1825715206910695">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1825715206910695"
+     crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Race Game - L Theme | Full Road | High Volume</title>
+    <style>
+        * {
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body { margin: 0; overflow: hidden; font-family: 'Arial', sans-serif; touch-action: pan-x; background: #000; }
+        
+        /* Main Menu */
+        #mainMenu {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0a0a2a, #1a1a3a); z-index: 300;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .menu-container {
+            text-align: center; background: rgba(0,0,0,0.85); padding: 40px 50px;
+            border-radius: 30px; border: 2px solid #ff6600;
+        }
+        .game-title { font-size: 48px; font-weight: bold; color: #ff6600; margin-bottom: 30px; text-shadow: 0 0 10px #ff6600; }
+        .menu-btn {
+            display: block; width: 250px; margin: 15px auto; padding: 15px 25px;
+            font-size: 20px; font-weight: bold; border: none; border-radius: 50px;
+            cursor: pointer; background: #ff6600; color: white; transition: 0.2s;
+        }
+        .menu-btn:hover { transform: scale(1.05); background: #ff8844; }
+        .settings-btn { background: #333; }
+        .settings-btn:hover { background: #555; }
+        
+        /* Settings Panel */
+        #settingsPanel {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 350; display: none;
+            justify-content: center; align-items: center;
+        }
+        .settings-container {
+            background: rgba(20,20,40,0.98); padding: 30px; border-radius: 20px;
+            border: 2px solid #ff6600; text-align: center;
+        }
+        .color-options { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin: 20px 0; }
+        .color-box { width: 50px; height: 50px; border-radius: 50%; cursor: pointer; border: 3px solid white; transition: 0.1s; }
+        .color-box.selected { border: 3px solid #ff6600; transform: scale(1.1); }
+        .close-settings { background: #ff6600; color: white; border: none; padding: 12px 30px; border-radius: 25px; margin-top: 20px; cursor: pointer; font-weight: bold; }
+        
+        /* Game UI */
+        #gameUI { display: none; }
+        #score { 
+            position: absolute; top: 20px; left: 20px; color: white; font-size: 28px; font-weight: bold;
+            background: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 15px; z-index: 100; 
+            font-family: monospace; backdrop-filter: blur(5px);
+        }
+        #pauseBtn { 
+            position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.7); 
+            color: white; border: none; padding: 10px 20px; border-radius: 15px; 
+            cursor: pointer; z-index: 100; font-family: monospace; font-weight: bold; font-size: 16px;
+            backdrop-filter: blur(5px);
+        }
+        #gameOver {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.95); padding: 35px 60px; border-radius: 30px;
+            text-align: center; z-index: 200; display: none; color: white; border: 2px solid #ff6600;
+        }
+        .controls-container { 
+            position: absolute; bottom: 30px; left: 0; right: 0; display: flex; 
+            justify-content: center; gap: 60px; z-index: 150; 
+        }
+        .control-btn { 
+            width: 85px; height: 85px; border-radius: 50%; background: rgba(0,0,0,0.75);
+            border: 3px solid white; display: flex; align-items: center; justify-content: center;
+            font-size: 52px; color: white; cursor: pointer; font-weight: bold;
+            backdrop-filter: blur(5px); transition: 0.05s linear;
+        }
+        .control-btn:active { background: #ff6600; transform: scale(0.95); }
+        
+        /* JUMP BUTTON - CENTER */
+        .jump-btn {
+            position: absolute; bottom: 30px; left: 85%; transform: translateX(-50%);
+            width: 90px; height: 90px; border-radius: 50%; background: rgba(255,80,40,0.9);
+            border: 3px solid #ffaa44; display: flex; align-items: center; justify-content: center;
+            font-size: 36px; color: white; cursor: pointer; font-weight: bold;
+            backdrop-filter: blur(5px); transition: 0.05s linear; box-shadow: 0 0 15px #ff4400;
+            z-index: 150;
+        }
+        .jump-btn:active { transform: translateX(-50%) scale(0.5); background: #ff2200; }
+        
+        /* EXHAUST BUTTON - RIGHT SIDE */
+        .exhaust-btn {
+            position: absolute; bottom: 30px; right: 50px;
+            width: 70px; height: 70px; border-radius: 50%; background: rgba(0,0,0,0.75);
+            border: 3px solid #ffaa44; display: flex; align-items: center; justify-content: center;
+            font-size: 32px; color: white; cursor: pointer; font-weight: bold;
+            backdrop-filter: blur(5px); transition: 0.05s linear; z-index: 150;
+        }
+        .exhaust-btn:active { transform: scale(0.9); background: #ff6600; }
+        
+        .speedometer { 
+            position: absolute; bottom: 130px; right: 20px; color: #ffaa44; font-weight: bold;
+            background: rgba(0,0,0,0.7); padding: 8px 16px; border-radius: 20px; 
+            font-family: monospace; font-weight: bold; font-size: 20px; backdrop-filter: blur(5px);
+        }
+        
+        @media (max-width: 768px) { 
+            .control-btn { width: 65px; height: 65px; font-size: 40px; } 
+            .game-title { font-size: 32px; }
+            .speedometer { font-size: 16px; bottom: 110px; }
+            .jump-btn { width: 50px; height: 50px; font-size: 28px; bottom: 300px; left: 80%; }
+            .exhaust-btn { width: 55px; height: 55px; font-size: 24px; bottom: 200px; right: 20px; }
+            #score { font-size: 20px; top: 10px; left: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div id="mainMenu">
+        <div class="menu-container">
+            <div class="game-title">🏁 DEATH NOTE RACING 🏁</div>
+            <button class="menu-btn" id="playBtn">▶ PLAY GAME</button>
+            <button class="menu-btn settings-btn" id="menuSettingsBtn">⚙ CAR COLOR</button>
+        </div>
+    </div>
+    <div id="settingsPanel">
+        <div class="settings-container">
+            <h2 style="color:#ff6600;">CAR COLOR</h2>
+            <div class="color-options">
+                <div class="color-box" style="background: #ff3300;" data-color="#ff3300"></div>
+                <div class="color-box" style="background: #33ff33;" data-color="#33ff33"></div>
+                <div class="color-box" style="background: #3399ff;" data-color="#3399ff"></div>
+                <div class="color-box" style="background: #ffff33;" data-color="#ffff33"></div>
+                <div class="color-box" style="background: #ff33ff;" data-color="#ff33ff"></div>
+                <div class="color-box" style="background: #ffffff;" data-color="#ffffff"></div>
+                <div class="color-box" style="background: #000000;" data-color="#000000"></div>
+            </div>
+            <button class="close-settings" id="closeSettingsBtn">SAVE & CLOSE</button>
+        </div>
+    </div>
+    <div id="gameUI">
+        <div id="score">🏆 SCORE: 0</div>
+        <button id="pauseBtn">⏸ MENU</button>
+        <div class="speedometer" id="speedometer">⚡ 0 km/h</div>
+        
+        <!-- JUMP BUTTON - CENTER -->
+        <div class="jump-btn" id="jumpBtn">🚀</div>
+        
+        <!-- EXHAUST BUTTON - RIGHT SIDE -->
+        <div class="exhaust-btn" id="exhaustBtn">💨</div>
+        
+        <div id="gameOver">
+            <h2>💥 GAME OVER 💥</h2>
+            <p style="font-size: 32px; font-weight: bold;">SCORE: <span id="finalScore">0</span></p>
+            <button id="restartBtn" style="background:#ff6600; padding:12px 25px; margin:5px; border:none; border-radius:10px; cursor:pointer; font-size:18px; font-weight:bold;">🔄 PLAY AGAIN</button>
+            <button id="menuBtn" style="background:#333; color:white; padding:12px 25px; margin:5px; border:none; border-radius:10px; cursor:pointer; font-size:18px; font-weight:bold;">🏠 MAIN MENU</button>
+        </div>
+        <div class="controls-container">
+            <div class="control-btn" id="leftBtn">◀</div>
+            <div class="control-btn" id="rightBtn">▶</div>
+        </div>
+    </div>
+
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js" } }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        
+        // ========== AUDIO SYSTEM - LOCAL FILES ==========
+        let soundEnabled = true;
+        
+        // *** UPDATED: Background music uses local "bgmusic.mp3" ***
+        const BG_MUSIC_URL = "bgmusic.mp3";
+        
+        // *** UPDATED: Car engine sound uses local "carrun.mp3" ***
+        const CAR_ENGINE_URL = "carrun.mp3";
+        
+        // Other sound effects (using reliable online sources for maximum compatibility)
+        // These will still work, but if you want local versions you can replace them too
+        const EXHAUST_SHORT_URL = "https://cdn.pixabay.com/download/audio/2022/01/18/audio_c8b5a2d1e3.mp3?filename=car-rev-short-26322.mp3";
+        const CRASH_URL = "https://cdn.pixabay.com/download/audio/2022/03/10/audio_c6f2f4b6b6.mp3?filename=car-crash-6775.mp3";
+        const JUMP_URL = "https://cdn.pixabay.com/download/audio/2022/05/09/audio_6a4c3b2a1c.mp3?filename=whoosh-6317.mp3";
+        const SCORE_URL = "https://cdn.pixabay.com/download/audio/2022/03/10/audio_8a4b2c1d3e.mp3?filename=beep-38749.mp3";
+        
+        let bgMusic = null;
+        let carEngineSound = null;
+        let isMusicPlaying = false;
+        let isEnginePlaying = false;
+        let lastSpeed = 0;
+        
+        // Helper: Safely play audio with volume and error handling
+        function playSafeAudio(url, volume, loop = false) {
+            if (!soundEnabled) return null;
+            try {
+                const audio = new Audio(url);
+                audio.loop = loop;
+                audio.volume = volume;
+                const playPromise = audio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(e => {
+                        console.warn(`Audio play failed for ${url}:`, e);
+                    });
+                }
+                return audio;
+            } catch(e) {
+                console.warn("Audio creation error:", e);
+                return null;
+            }
+        }
+        
+        function startBackgroundMusic() {
+            if (!BG_MUSIC_URL) return;
+            if (bgMusic && isMusicPlaying) return;
+            try {
+                bgMusic = new Audio(BG_MUSIC_URL);
+                bgMusic.loop = true;
+                bgMusic.volume = 0.95;   // HIGH VOLUME
+                bgMusic.play().catch(e => {
+                    console.log("BG Music error (local file 'bgmusic.mp3' may be missing):", e);
+                    isMusicPlaying = false;
+                    bgMusic = null;
+                });
+                isMusicPlaying = true;
+            } catch(e) { console.warn("BG Music exception:", e); }
+        }
+        
+        function stopBackgroundMusic() {
+            if (bgMusic) {
+                bgMusic.pause();
+                bgMusic.currentTime = 0;
+                isMusicPlaying = false;
+                bgMusic = null;
+            }
+        }
+        
+        function startCarEngine() {
+            if (!soundEnabled) return;
+            if (carEngineSound && isEnginePlaying) return;
+            try {
+                // Use local carrun.mp3 for engine sound
+                carEngineSound = new Audio(CAR_ENGINE_URL);
+                carEngineSound.loop = true;
+                carEngineSound.volume = 0.85;  // HIGH VOLUME
+                carEngineSound.play().catch(e => {
+                    console.log("Car engine error (local file 'carrun.mp3' may be missing):", e);
+                    isEnginePlaying = false;
+                    carEngineSound = null;
+                });
+                isEnginePlaying = true;
+            } catch(e) { console.warn("Car engine exception:", e); }
+        }
+        
+        function stopCarEngine() {
+            if (carEngineSound) {
+                carEngineSound.pause();
+                carEngineSound.currentTime = 0;
+                isEnginePlaying = false;
+                carEngineSound = null;
+            }
+        }
+        
+        function updateEnginePitch(speedVal) {
+            if (!carEngineSound || !soundEnabled) return;
+            const minRate = 0.7;
+            const maxRate = 1.6;
+            const rate = minRate + (maxRate - minRate) * (speedVal / 20);
+            try {
+                carEngineSound.playbackRate = Math.min(maxRate, Math.max(minRate, rate));
+            } catch(e) {}
+            
+            // Extra exhaust pop on acceleration
+            if (speedVal > lastSpeed + 1.8) {
+                playExhaustSound();
+            }
+            lastSpeed = speedVal;
+        }
+        
+        function playExhaustSound() {
+            if (!soundEnabled) return;
+            try {
+                const exhaust = new Audio(EXHAUST_SHORT_URL);
+                exhaust.volume = 0.7;
+                exhaust.play().catch(e => {});
+            } catch(e) {}
+        }
+        
+        function manualExhaust() {
+            if (!soundEnabled) return;
+            try {
+                const exhaust = new Audio(EXHAUST_SHORT_URL);
+                exhaust.volume = 0.85;
+                exhaust.play().catch(e => {});
+            } catch(e) {}
+            const btn = document.getElementById('exhaustBtn');
+            btn.style.transform = 'scale(0.9)';
+            btn.style.background = '#ff6600';
+            setTimeout(() => {
+                btn.style.transform = '';
+                btn.style.background = '';
+            }, 150);
+        }
+        
+        function playCrashSound() {
+            if (!soundEnabled) return;
+            try {
+                const crash = new Audio(CRASH_URL);
+                crash.volume = 0.8;
+                crash.play().catch(e => {});
+            } catch(e) {}
+        }
+        
+        function playJumpSound() {
+            if (!soundEnabled) return;
+            try {
+                const jump = new Audio(JUMP_URL);
+                jump.volume = 0.65;
+                jump.play().catch(e => {});
+            } catch(e) {}
+        }
+        
+        function playScoreSound() {
+            if (!soundEnabled) return;
+            try {
+                const scoreSnd = new Audio(SCORE_URL);
+                scoreSnd.volume = 0.5;
+                scoreSnd.play().catch(e => {});
+            } catch(e) {}
+        }
+        
+        // ========== THREE.JS GAME SETUP ==========
+        let gameActive = false;
+        let scene, camera, renderer, carGroup, stars;
+        let enemyCars = [];
+        let lines = [];
+        let trees = [];
+        let carX = 0, score = 0, speed = 6.5, baseSpeed = 6.5;
+        let leftPressed = false, rightPressed = false;
+        let selectedColor = '#ff3300';
+        
+        let isJumping = false;
+        let jumpVelocity = 0;
+        let carY = 0;
+        const GRAVITY = 16;
+        const JUMP_POWER = 6.2;
+        
+        let currentTimeOfDay = 0;
+        let dayNightCycleTimer = 0;
+        let ambientLight, dirLight, fillLight;
+        
+        const mainMenu = document.getElementById('mainMenu');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const gameUI = document.getElementById('gameUI');
+        const playBtn = document.getElementById('playBtn');
+        const menuSettingsBtn = document.getElementById('menuSettingsBtn');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const menuBtn = document.getElementById('menuBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const scoreElement = document.getElementById('score');
+        const speedometerElem = document.getElementById('speedometer');
+        const finalScoreSpan = document.getElementById('finalScore');
+        const gameOverDiv = document.getElementById('gameOver');
+        const exhaustBtn = document.getElementById('exhaustBtn');
+        const jumpBtn = document.getElementById('jumpBtn');
+        
+        exhaustBtn.addEventListener('click', manualExhaust);
+        jumpBtn.addEventListener('click', () => jump());
+        
+        document.querySelector('.color-box').classList.add('selected');
+        document.querySelectorAll('.color-box').forEach(box => {
+            box.addEventListener('click', () => {
+                document.querySelectorAll('.color-box').forEach(b => b.classList.remove('selected'));
+                box.classList.add('selected');
+                selectedColor = box.dataset.color;
+            });
+        });
+        
+        function updateDayNight() {
+            if (!scene) return;
+            const times = [
+                { ambient: 0x445566, dir: 0xffcc88, fill: 0x6688aa, bg: 0x1a2a3a, fog: 0x1a2a3a },
+                { ambient: 0x88aacc, dir: 0xffeedd, fill: 0xaaccff, bg: 0x3a6a8a, fog: 0x3a6a8a },
+                { ambient: 0x664422, dir: 0xffaa66, fill: 0x886644, bg: 0x2a1a0a, fog: 0x2a1a0a },
+                { ambient: 0x111122, dir: 0x6688aa, fill: 0x224466, bg: 0x0a0a1a, fog: 0x0a0a1a }
+            ];
+            const t = times[currentTimeOfDay];
+            if (ambientLight) ambientLight.color.setHex(t.ambient);
+            if (dirLight) dirLight.color.setHex(t.dir);
+            if (fillLight) fillLight.color.setHex(t.fill);
+            scene.background.setHex(t.bg);
+            scene.fog.color.setHex(t.fog);
+        }
+        
+        function createCar() {
+            if (carGroup) scene.remove(carGroup);
+            carGroup = new THREE.Group();
+            const bodyMat = new THREE.MeshStandardMaterial({ color: selectedColor, metalness: 0.85, roughness: 0.2 });
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.35, 1.6), bodyMat);
+            body.position.y = 0.2;
+            body.castShadow = true;
+            carGroup.add(body);
+            
+            const glassMat = new THREE.MeshStandardMaterial({ color: 0x88aaff, metalness: 0.95 });
+            const windshield = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.2, 0.4), glassMat);
+            windshield.position.set(0, 0.48, 0.5);
+            carGroup.add(windshield);
+            
+            const roofMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
+            const roof = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.2, 0.8), roofMat);
+            roof.position.set(0, 0.48, 0);
+            carGroup.add(roof);
+            
+            const lightMat = new THREE.MeshStandardMaterial({ color: 0xffaa66, emissive: 0xff4400 });
+            const leftLight = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), lightMat);
+            leftLight.position.set(-0.38, 0.22, -0.85);
+            carGroup.add(leftLight);
+            
+            const rightLight = new THREE.Mesh(new THREE.SphereGeometry(0.08, 8, 8), lightMat);
+            rightLight.position.set(0.38, 0.22, -0.85);
+            carGroup.add(rightLight);
+            
+            const wheelMat = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.6 });
+            const wheelPos = [[-0.55, 0.12, -0.65], [0.55, 0.12, -0.65], [-0.55, 0.12, 0.65], [0.55, 0.12, 0.65]];
+            wheelPos.forEach(pos => {
+                const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.45, 16), wheelMat);
+                wheel.rotation.z = Math.PI / 2;
+                wheel.position.set(pos[0], pos[1], pos[2]);
+                wheel.castShadow = true;
+                carGroup.add(wheel);
+            });
+            scene.add(carGroup);
+            carGroup.position.set(0, 0, 0);
+            carY = 0;
+        }
+        
+        function createEnemyCar(color, x, z) {
+            const enemyGroup = new THREE.Group();
+            const bodyMat = new THREE.MeshStandardMaterial({ color: color, metalness: 0.6 });
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.35, 1.5), bodyMat);
+            body.position.y = 0.2;
+            body.castShadow = true;
+            enemyGroup.add(body);
+            
+            const roofMat = new THREE.MeshStandardMaterial({ color: 0x333333 });
+            const roof = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.22, 0.8), roofMat);
+            roof.position.set(0, 0.46, 0);
+            enemyGroup.add(roof);
+            
+            const glassMat = new THREE.MeshStandardMaterial({ color: 0x6699cc, metalness: 0.8 });
+            const window1 = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.18, 0.35), glassMat);
+            window1.position.set(0, 0.5, 0.45);
+            enemyGroup.add(window1);
+            
+            const wheelMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
+            const wheelPos = [[-0.5, 0.12, -0.6], [0.5, 0.12, -0.6], [-0.5, 0.12, 0.6], [0.5, 0.12, 0.6]];
+            wheelPos.forEach(pos => {
+                const wheel = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 0.4, 16), wheelMat);
+                wheel.rotation.z = Math.PI / 2;
+                wheel.position.set(pos[0], pos[1], pos[2]);
+                wheel.castShadow = true;
+                enemyGroup.add(wheel);
+            });
+            
+            const lightMat = new THREE.MeshStandardMaterial({ color: 0xffaa66 });
+            const leftLight = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), lightMat);
+            leftLight.position.set(-0.32, 0.2, -0.78);
+            enemyGroup.add(leftLight);
+            const rightLight = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), lightMat);
+            rightLight.position.set(0.32, 0.2, -0.78);
+            enemyGroup.add(rightLight);
+            
+            enemyGroup.position.set(x, 0, z);
+            enemyGroup.castShadow = true;
+            scene.add(enemyGroup);
+            return enemyGroup;
+        }
+        
+        function createRoad() {
+            const roadMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.6 });
+            const road = new THREE.Mesh(new THREE.PlaneGeometry(120, 200), roadMat);
+            road.rotation.x = -Math.PI / 2;
+            road.position.y = -0.2;
+            road.receiveShadow = true;
+            scene.add(road);
+            
+            const lineMat = new THREE.MeshStandardMaterial({ color: 0xffaa44 });
+            for (let z = -50; z <= 50; z += 1.8) {
+                const line = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.08, 0.6), lineMat);
+                line.position.set(0, -0.12, z);
+                line.castShadow = true;
+                scene.add(line);
+                lines.push(line);
+            }
+            
+            const edgeMat = new THREE.MeshStandardMaterial({ color: 0xff8844 });
+            for (let z = -50; z <= 50; z += 1.5) {
+                const leftEdge = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.08, 0.6), edgeMat);
+                leftEdge.position.set(-5.8, -0.12, z);
+                scene.add(leftEdge);
+                const rightEdge = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.08, 0.6), edgeMat);
+                rightEdge.position.set(5.8, -0.12, z);
+                scene.add(rightEdge);
+            }
+        }
+        
+        function createBigTree(x, z) {
+            const tree = new THREE.Group();
+            const trunkMat = new THREE.MeshStandardMaterial({ color: 0x6B4226 });
+            const topMat = new THREE.MeshStandardMaterial({ color: 0x2d6a2d });
+            const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.8, 2.0, 8), trunkMat);
+            trunk.position.y = 0.8;
+            tree.add(trunk);
+            const top1 = new THREE.Mesh(new THREE.ConeGeometry(0.9, 1.2, 8), topMat);
+            top1.position.y = 1.6;
+            tree.add(top1);
+            const top2 = new THREE.Mesh(new THREE.ConeGeometry(0.8, 1.0, 8), topMat);
+            top2.position.y = 2.3;
+            tree.add(top2);
+            const top3 = new THREE.Mesh(new THREE.ConeGeometry(0.6, 0.8, 8), topMat);
+            top3.position.y = 2.9;
+            tree.add(top3);
+            tree.position.set(x, -0.3, z);
+            tree.castShadow = true;
+            scene.add(tree);
+            return tree;
+        }
+        
+        function createScenery() {
+            trees.forEach(tree => scene.remove(tree));
+            trees = [];
+            for (let z = -45; z <= 45; z += 4.5) {
+                if (Math.abs(z) > 5) {
+                    for (let x = -7.5; x >= -12; x -= 2.2) {
+                        const tree = createBigTree(x, z + Math.random() * 2);
+                        trees.push(tree);
+                    }
+                    for (let x = 7.5; x <= 12; x += 2.2) {
+                        const tree = createBigTree(x, z + Math.random() * 2);
+                        trees.push(tree);
+                    }
+                }
+                trees.push(createBigTree(-9.5, z));
+                trees.push(createBigTree(9.5, z));
+            }
+        }
+        
+        function createEnemyCars() {
+            enemyCars.forEach(car => scene.remove(car));
+            enemyCars = [];
+            const colors = [0xff3333, 0x33ff33, 0x3399ff, 0xffaa33, 0xff33ff, 0x33ffff];
+            for (let i = 0; i < 8; i++) {
+                const xPos = (Math.random() - 0.5) * 5.5;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const enemyCar = createEnemyCar(color, xPos, -20 - (i * 6));
+                enemyCars.push(enemyCar);
+            }
+        }
+        
+        function spawnEnemyCar() {
+            if (!gameActive) return;
+            const colors = [0xff3333, 0x33ff33, 0x3399ff, 0xffaa33, 0xff33ff, 0x33ffff];
+            const xPos = (Math.random() - 0.5) * 5.8;
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const enemyCar = createEnemyCar(color, xPos, -35);
+            enemyCars.push(enemyCar);
+        }
+        
+        function updateTreesPosition(deltaSpeed) {
+            for (let tree of trees) {
+                tree.position.z += deltaSpeed;
+                if (tree.position.z > 35) tree.position.z = -50;
+                if (tree.position.z < -50) tree.position.z = 35;
+            }
+        }
+        
+        function resetGame() {
+            score = 0;
+            speed = baseSpeed;
+            carX = 0;
+            carGroup.position.x = 0;
+            scoreElement.innerText = `🏆 SCORE: 0`;
+            gameOverDiv.style.display = 'none';
+            isJumping = false;
+            jumpVelocity = 0;
+            carGroup.position.y = 0;
+            lastSpeed = 0;
+            
+            enemyCars.forEach(car => scene.remove(car));
+            enemyCars.length = 0;
+            const colors = [0xff3333, 0x33ff33, 0x3399ff, 0xffaa33, 0xff33ff, 0x33ffff];
+            for (let i = 0; i < 8; i++) {
+                const xPos = (Math.random() - 0.5) * 5.5;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const enemyCar = createEnemyCar(color, xPos, -20 - (i * 6));
+                enemyCars.push(enemyCar);
+            }
+            
+            if (soundEnabled) {
+                startBackgroundMusic();
+                startCarEngine();
+            }
+        }
+        
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a2a3a);
+            scene.fog = new THREE.FogExp2(0x1a2a3a, 0.003);
+            
+            const starGeometry = new THREE.BufferGeometry();
+            const starPositions = new Float32Array(1000 * 3);
+            for (let i = 0; i < 1000; i++) {
+                starPositions[i*3] = (Math.random() - 0.5) * 2000;
+                starPositions[i*3+1] = (Math.random() - 0.5) * 500;
+                starPositions[i*3+2] = (Math.random() - 0.5) * 150 - 80;
+            }
+            starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+            stars = new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xffffff, size: 0.2 }));
+            scene.add(stars);
+            
+            camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 5.5, 13);
+            
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            document.body.appendChild(renderer.domElement);
+            
+            ambientLight = new THREE.AmbientLight(0x445566);
+            scene.add(ambientLight);
+            dirLight = new THREE.DirectionalLight(0xffcc88, 1.2);
+            dirLight.position.set(5, 12, 6);
+            dirLight.castShadow = true;
+            scene.add(dirLight);
+            fillLight = new THREE.PointLight(0x6688aa, 0.4);
+            fillLight.position.set(0, 4, -3);
+            scene.add(fillLight);
+            
+            createCar();
+            createRoad();
+            createScenery();
+            createEnemyCars();
+            animate();
+        }
+        
+        let lastTime = 0;
+        let lineOffset = 0;
+        let spawnCounter = 0;
+        let lastScoreTrigger = 0;
+        
+        function jump() {
+            if (!gameActive || isJumping) return;
+            isJumping = true;
+            jumpVelocity = JUMP_POWER;
+            playJumpSound();
+        }
+        
+        function animate() {
+            const now = performance.now();
+            let delta = Math.min(0.033, (now - lastTime) / 1000);
+            lastTime = now;
+            
+            dayNightCycleTimer += delta;
+            if (dayNightCycleTimer > 35) {
+                dayNightCycleTimer = 0;
+                currentTimeOfDay = (currentTimeOfDay + 1) % 4;
+                updateDayNight();
+            }
+            
+            if (gameActive) {
+                let move = 0;
+                if (leftPressed) move = -1;
+                if (rightPressed) move = 1;
+                carX += move * 14 * delta;
+                carX = Math.max(-3.8, Math.min(3.8, carX));
+                carGroup.position.x = carX;
+                
+                if (isJumping) {
+                    jumpVelocity -= GRAVITY * delta;
+                    carY += jumpVelocity * delta;
+                    if (carY <= 0) {
+                        carY = 0;
+                        isJumping = false;
+                        jumpVelocity = 0;
+                    }
+                    carGroup.position.y = carY;
+                } else {
+                    carGroup.position.y = 0;
+                }
+                
+                score += 50 * delta;
+                scoreElement.innerText = `🏆 SCORE: ${Math.floor(score)}`;
+                speed = baseSpeed + Math.floor(score / 500);
+                if (speed > 18) speed = 18;
+                updateEnginePitch(speed);
+                
+                if (Math.floor(score) % 350 < 45 && Math.floor(score) > 0 && Math.floor(score) !== lastScoreTrigger) {
+                    playScoreSound();
+                    lastScoreTrigger = Math.floor(score);
+                }
+                speedometerElem.innerText = `⚡ ${Math.floor(speed * 24)} km/h`;
+                
+                for (let i = 0; i < enemyCars.length; i++) {
+                    enemyCars[i].position.z += speed * delta;
+                }
+                updateTreesPosition(speed * delta);
+                
+                lineOffset += speed * delta * 5.5;
+                lines.forEach((line, idx) => {
+                    let newZ = (idx * 1.8 - 50 + lineOffset) % 35;
+                    if (newZ > 18) newZ -= 35;
+                    line.position.z = newZ;
+                });
+                
+                for (let i = enemyCars.length-1; i >= 0; i--) {
+                    if (enemyCars[i].position.z > 8) {
+                        scene.remove(enemyCars[i]);
+                        enemyCars.splice(i,1);
+                        score += 70;
+                        playScoreSound();
+                    }
+                }
+                
+                spawnCounter += delta;
+                if (spawnCounter > 1.8 && enemyCars.length < 15) {
+                    spawnEnemyCar();
+                    spawnCounter = 0;
+                }
+                
+                stars.rotation.y += 0.0008;
+                
+                const carWorldPos = carGroup.position;
+                for (let enemy of enemyCars) {
+                    const isAbove = carGroup.position.y > 0.6;
+                    if (!isAbove && Math.abs(carWorldPos.x - enemy.position.x) < 0.9 && Math.abs(carWorldPos.z - enemy.position.z) < 1.3) {
+                        gameActive = false;
+                        finalScoreSpan.innerText = Math.floor(score);
+                        gameOverDiv.style.display = 'block';
+                        playCrashSound();
+                        stopBackgroundMusic();
+                        stopCarEngine();
+                        break;
+                    }
+                }
+            }
+            
+            const targetCamX = carX * 0.3;
+            camera.position.x += (targetCamX - camera.position.x) * 0.1;
+            camera.position.z = 13 + carY * 0.4;
+            camera.lookAt(carGroup.position.x, 0.3 + carY * 0.3, carGroup.position.z - 2.5);
+            carGroup.rotation.z = carX * -0.12;
+            
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        
+        function startGame() {
+            resetGame();
+            gameActive = true;
+            mainMenu.style.display = 'none';
+            gameUI.style.display = 'block';
+            settingsPanel.style.display = 'none';
+            leftPressed = false;
+            rightPressed = false;
+            spawnCounter = 0;
+            startBackgroundMusic();
+            startCarEngine();
+        }
+        
+        function pauseToMenu() {
+            gameActive = false;
+            mainMenu.style.display = 'flex';
+            gameUI.style.display = 'none';
+            stopBackgroundMusic();
+            stopCarEngine();
+        }
+        
+        function applySettings() { createCar(); }
+        
+        window.addEventListener('keydown', (e) => {
+            if (!gameActive) return;
+            if (e.key === 'ArrowLeft' || e.key === 'a') { leftPressed = true; e.preventDefault(); }
+            if (e.key === 'ArrowRight' || e.key === 'd') { rightPressed = true; e.preventDefault(); }
+            if (e.key === 'ArrowUp' || e.key === ' ' || e.key === 'Space') { jump(); e.preventDefault(); }
+            if (e.key === 'e' || e.key === 'E') { manualExhaust(); e.preventDefault(); }
+        });
+        
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a') leftPressed = false;
+            if (e.key === 'ArrowRight' || e.key === 'd') rightPressed = false;
+        });
+        
+        document.getElementById('leftBtn').addEventListener('touchstart', (e) => { e.preventDefault(); if(gameActive) leftPressed = true; });
+        document.getElementById('leftBtn').addEventListener('touchend', () => { leftPressed = false; });
+        document.getElementById('leftBtn').addEventListener('mousedown', () => { if(gameActive) leftPressed = true; });
+        document.getElementById('leftBtn').addEventListener('mouseup', () => { leftPressed = false; });
+        
+        document.getElementById('rightBtn').addEventListener('touchstart', (e) => { e.preventDefault(); if(gameActive) rightPressed = true; });
+        document.getElementById('rightBtn').addEventListener('touchend', () => { rightPressed = false; });
+        document.getElementById('rightBtn').addEventListener('mousedown', () => { if(gameActive) rightPressed = true; });
+        document.getElementById('rightBtn').addEventListener('mouseup', () => { rightPressed = false; });
+        
+        playBtn.addEventListener('click', startGame);
+        menuSettingsBtn.addEventListener('click', () => { settingsPanel.style.display = 'flex'; });
+        closeSettingsBtn.addEventListener('click', () => { applySettings(); settingsPanel.style.display = 'none'; });
+        pauseBtn.addEventListener('click', pauseToMenu);
+        menuBtn.addEventListener('click', () => { gameActive = false; gameUI.style.display = 'none'; mainMenu.style.display = 'flex'; gameOverDiv.style.display = 'none'; stopBackgroundMusic(); stopCarEngine(); });
+        restartBtn.addEventListener('click', () => { resetGame(); gameActive = true; gameOverDiv.style.display = 'none'; startBackgroundMusic(); startCarEngine(); });
+        
+        window.addEventListener('resize', () => {
+            if (camera) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }
+        });
+        
+        initThreeJS();
+        updateDayNight();
+        mainMenu.style.display = 'flex';
+        gameUI.style.display = 'none';
+    </script>
+<div style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.8); padding: 10px; text-align: center; z-index: 200;">
+    <a href="privacy.html" style="color: #ff6600; margin: 0 15px; text-decoration: none;">Privacy Policy</a>
+    <a href="about.html" style="color: #ff6600; margin: 0 15px; text-decoration: none;">About Us</a>
+    <a href="contact.html" style="color: #ff6600; margin: 0 15px; text-decoration: none;">Contact</a>
+</div>
+</body>
+<amp-auto-ads type="adsense"
+        data-ad-client="ca-pub-1825715206910695">
+</amp-auto-ads>
+</html>margin: 0 15px; text-decoration: none;">About Us</a>
+    <a href="contact.html" style="color: #ff6600; margin: 0 15px; text-decoration: none;">Contact</a>
+</div>
+</body>
+<amp-auto-ads type="adsense"
+        data-ad-client="ca-pub-1825715206910695">
+</amp-auto-ads>
+</html>
